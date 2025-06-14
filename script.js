@@ -188,6 +188,11 @@ document.getElementById('pain-form').addEventListener('submit', async (e) => {
   // reset date field to today
   const today = getTodayInMountainTime();
   document.getElementById('date').value = today;
+
+  // clear canvas and drawing state
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  paths = [];
+  redoStack = [];
 });
 
 // This function will take the user's drawing and save it over
