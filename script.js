@@ -130,8 +130,13 @@ canvas.addEventListener('touchend', stopDrawing);
 canvas.addEventListener('touchcancel', stopDrawing);
 
 document.addEventListener('DOMContentLoaded', () => {
+  // set stroke type to free draw initially
+  document.getElementById('stroke-type').value = 'free';
+  currentStrokeType = 'free';
+
+  // set date to today's date initially
   const today = new Date().toISOString().split('T')[0];
-    document.getElementById('date').value = today;
+  document.getElementById('date').value = today;
 });
 
 document.getElementById('stroke-type').addEventListener('change', (e) => {
@@ -158,6 +163,9 @@ document.getElementById('pain-form').addEventListener('submit', async (e) => {
   const blob = await response.blob();
   const url = URL.createObjectURL(blob);
   window.open(url); // or force download
+
+  // reset all form values after submission
+  document.getElementById('pain-form').reset();
 });
 
 // This function will take the user's drawing and save it over
