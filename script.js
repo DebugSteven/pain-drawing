@@ -108,19 +108,14 @@ function drawPath(ctx, path) {
 function getTodayInMountainTime() {
   const now = new Date();
 
-  const formatter = new Intl.DateTimeFormat('en-US', {
+  const formatter = new Intl.DateTimeFormat('en-CA', {
     timeZone: 'America/Denver',
     year: 'numeric',
     month: '2-digit',
     day: '2-digit'
   });
 
-  const parts = formatter.formatToParts(now);
-  const month = parts.find(p => p.type === 'month').value;
-  const day = parts.find(p => p.type === 'day').value;
-  const year = parts.find(p => p.type === 'year').value;
-
-  return `${month}-${day}-${year}`;
+  return formatter.format(now);
 }
 
 function undo() {
