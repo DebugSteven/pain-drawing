@@ -48,10 +48,17 @@ function draw(e) {
     ctx.lineCap = 'round';
     ctx.stroke();
   } else {
-    // draw symbol at cursor/finger location
+    // draw symbol at cursor/finger location with spacing of 15
     ctx.font = '16px sans-serif';
     ctx.fillStyle = 'red';
-    ctx.fillText(currentStrokeType, pos.x, pos.y);
+    const spacing = 15;
+
+    for (let i = 0; i < currentPath.length; i += 1) {
+      const { x, y } = currentPath[i];
+      if (i % spacing === 0 || i == 0) {
+        ctx.fillText(currentStrokeType, x, y);
+      }
+    }
   }
 }
 
