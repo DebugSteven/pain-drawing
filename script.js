@@ -175,7 +175,18 @@ document.getElementById('pain-form').addEventListener('submit', async (e) => {
 
   const blob = await response.blob();
   const url = URL.createObjectURL(blob);
-  window.open(url); // or force download
+  //window.open(url);
+
+  // create temporary link for download
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `PainDrawing-${name}-${getTodayInMountainTime()}.pdf`
+  document.body.appendChild(a);
+  a.click();
+
+  // clean up download link
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
 
   // reset all form values after submission
   document.getElementById('pain-form').reset();
