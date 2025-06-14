@@ -177,10 +177,22 @@ document.getElementById('pain-form').addEventListener('submit', async (e) => {
   const url = URL.createObjectURL(blob);
   //window.open(url);
 
+  // extract patient name for file name
+  const name = formData.get('name');
+  const safeName = name.trim().replace(/\s+/g, '_').replace(/[^a-zA-Z0-9_]/g, '');
+  const isValidName = safeName.length > 0 && safeName.length <= 30;
+
+  // today
+  const date = getTodayInMountainTime();
+
+  const filename = isValidName
+    ? `PainDrawing-${safeName}-${date}.pdf`
+    : `PainDrawing-${date}.pdf`
+
   // create temporary link for download
   const a = document.createElement('a');
   a.href = url;
-  a.download = `PainDrawing-${name}-${getTodayInMountainTime()}.pdf`
+  a.download = filename;
   document.body.appendChild(a);
   a.click();
 
