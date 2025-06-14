@@ -1,0 +1,55 @@
+<canvas id="merged" width="500" height="700" style="display: none;"></canvas>
+
+<h2>Pain Drawing Instructions</h2>
+<div style="max-width: 700px; margin-bottom: 20px;">
+  <p><strong>Please read carefully:</strong></p>
+  <p> 
+    This form does not save your progress. Please download to save.
+    Your drawing will be erased if the page is refreshed or closed.
+  <p>
+    Mark the areas on your body where you feel your pain is. Include all affected areas.
+    Mark areas of radiation. If your pain radiates, draw an arrow from where it starts to
+    where it stops. Please extend the arrow as far as the pain travels.
+  </p>
+  <p>
+    If you're filling this out on a computer or tablet, use your mouse, trackpad, or finger/stylus
+    to draw directly over the body diagram.
+  </p>
+  <p>Use the appropriate symbol(s) listed below:</p>
+  <ul>
+    <li><strong>Ache</strong>: &gt;&gt;&gt;&gt;&gt;</li>
+    <li><strong>Numbness</strong>: =====</li>
+    <li><strong>Pins & Needles</strong>: 0000</li>
+    <li><strong>Burning</strong>: XXXX</li>
+    <li><strong>Stabbing</strong>: /////</li>
+    <li><strong>Throbbing</strong>: ~~~~~</li>
+  </ul>
+</div>
+
+<form id="pain-form">
+  <label>Name: <input type="text" name="name" /></label><br />
+  <label>Date: <input type="date" name="date" id="date" /></label><br />
+  <label>Date of Birth: <input type="date" name="dob" /></label><br />
+  <label>Examiner: <input type="text" name="examiner" /></label><br />
+
+  <button type="button" onclick="undo()">Undo</button>
+  <button type="button" onclick="redo()">Redo</button>
+
+  <label for="stroke-type">Stroke Type:</label>
+  <select id="stroke-type">
+    <option value="free">Free Draw</option>
+    <option value="X">Ache (XXXX)</option>
+    <option value="/">Stabbing (/////)</option>
+    <option value="~">Throbbing (~~~~~)</option>
+    <option value="0">Pins & Needles (0000)</option>
+    <option value="=">Numbness (=====)</option>
+  </select>
+
+  <div style="position: relative; width: 500px; height: 700px;">
+    <img src="body-diagram.png" style="position: absolute; top: 0; left: 0; z-index: 0;" width="500" height="700" />
+    <canvas id="draw" width="500" height="700" style="position: absolute; top: 0; left: 0; z-index: 1;"></canvas>
+  </div>
+
+  <button type="submit">Submit</button>
+</form>
+<script src="script.js"></script>
