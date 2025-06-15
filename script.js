@@ -6,8 +6,6 @@ let currentPath = [];
 let paths = [];
 let redoStack = [];
 let currentStrokeType = 'free';
-//let symbolSpacing = 15;
-//let accumlatedDistance = 0;
 
 function getPos(e) {
   const rect = canvas.getBoundingClientRect();
