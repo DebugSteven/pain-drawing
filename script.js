@@ -147,10 +147,6 @@ document.addEventListener('DOMContentLoaded', () => {
   // set stroke type to free draw initially
   document.getElementById('stroke-type').value = 'free';
   currentStrokeType = 'free';
-
-  // set date to today's date initially
-  const today = getTodayInMountainTime();
-  document.getElementById('date').value = today;
 });
 
 document.getElementById('stroke-type').addEventListener('change', (e) => {
@@ -165,10 +161,6 @@ document.getElementById('pain-form').addEventListener('submit', async (e) => {
   const response = await fetch('/submit', {
     method: 'POST',
     body: JSON.stringify({
-      name: formData.get('name'),
-      date: formData.get('date'),
-      dob: formData.get('dob'),
-      examiner: formData.get('examiner'),
       image: mergedImage
     }),
     headers: { 'Content-Type': 'application/json' }
@@ -178,22 +170,10 @@ document.getElementById('pain-form').addEventListener('submit', async (e) => {
   const url = URL.createObjectURL(blob);
   //window.open(url);
 
-  // extract patient name for file name
-  const name = formData.get('name');
-  const safeName = name.trim().replace(/\s+/g, '_').replace(/[^a-zA-Z0-9_]/g, '');
-  const isValidName = safeName.length > 0 && safeName.length <= 30;
-
-  // today
-  const date = getTodayInMountainTime();
-
-  const filename = isValidName
-    ? `PainDrawing-${safeName}-${date}.pdf`
-    : `PainDrawing-${date}.pdf`
-
   // create temporary link for download
   const a = document.createElement('a');
   a.href = url;
-  a.download = filename;
+  a.download = `PainDrawing-${getTodayInMountainTime()}.pdf`;
   document.body.appendChild(a);
   a.click();
 
@@ -203,10 +183,6 @@ document.getElementById('pain-form').addEventListener('submit', async (e) => {
 
   // reset all form values after submission
   document.getElementById('pain-form').reset();
-
-  // reset date field to today
-  const today = getTodayInMountainTime();
-  document.getElementById('date').value = today;
 
   // clear canvas and drawing state
   ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -225,7 +201,7 @@ async function mergeCanvases() {
 
   // Draw the background image
   const bgImage = new Image();
-  bgImage.src = 'body-diagram.png'; // must match your actual image path
+  bgImage.src = 'body-diagram.png'; // image path for body-diagram.png
 
   return new Promise((resolve) => {
     bgImage.onload = () => {
