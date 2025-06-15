@@ -162,39 +162,29 @@ document.getElementById('stroke-type').addEventListener('change', (e) => {
 
 document.getElementById('pain-form').addEventListener('submit', async (e) => {
   e.preventDefault();
-  const formData = new FormData(e.target);
+
+  try {
   const mergedImage = await mergeCanvases(); // waits until image is ready
+  const timestamp = getMountainTimestamp();
+  const filename = `PainDrawing-${timestamp}.png`;
 
-  const response = await fetch('/submit', {
-    method: 'POST',
-    body: JSON.stringify({
-      image: mergedImage
-    }),
-    headers: { 'Content-Type': 'application/json' }
-  });
-
-  const blob = await response.blob();
-  const url = URL.createObjectURL(blob);
-  //window.open(url);
-
-  // create temporary link for download
   const a = document.createElement('a');
-  a.href = url;
-  a.download = `PainDrawing-${getTodayInMountainTime()}.pdf`;
+  a.href = mergedImage;
+  a.download = filename;
   document.body.appendChild(a);
   a.click();
-
-  // clean up download link
   document.body.removeChild(a);
-  URL.revokeObjectURL(url);
-
-  // reset all form values after submission
-  document.getElementById('pain-form').reset();
 
   // clear canvas and drawing state
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   paths = [];
   redoStack = [];
+  document.getElementById('stroke-type').value = 'free';
+  currentStrokeType = 'free';
+  } catch(err) {
+    console.error('Image download failed:', err);
+    alert('Something went wrong while creating the image.');
+  }
 });
 
 // This function will take the user's drawing and save it over
@@ -210,7 +200,7 @@ async function mergeCanvases() {
   const bgImage = new Image();
   bgImage.src = 'body-diagram.png'; // image path for body-diagram.png
 
-  return new Promise((resolve) => {
+  return new Promise((resolve, reject) => {
     bgImage.onload = () => {
       mergedCtx.drawImage(bgImage, 0, 0, mergedCanvas.width, mergedCanvas.height);
 
@@ -223,8 +213,10 @@ async function mergeCanvases() {
           drawPath(mergedCtx, path);
       }
 
-      resolve(mergedCanvas.toDataURL()); // export the merged image
+      resolve(mergedCanvas.toDataURL('image/png')); // export the merged image
     };
+
+    bgImage.onerror = () => reject('Failed to load background image');
   });
 }
 

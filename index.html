@@ -9,8 +9,9 @@
 <div style="max-width: 700px; margin-bottom: 20px;">
   <p><strong>Please read carefully:</strong></p>
   <p>
-    Your drawing will be erased if the page is refreshed or closed. No
-    drawing data is saved.
+    This drawing will download as an image. You can attach it to your
+    patient intake paperwork. Your drawing will be erased when the page
+    is refreshed or closed.
   <p>
     Mark the areas on your body where you feel your pain is. Include all affected areas.
     Mark areas of radiation. If your pain radiates, draw an arrow from where it starts to
@@ -31,7 +32,7 @@
   </ul>
 </div>
 
-<form id="pain-form" class="form-container" autocomplete="off">
+<form id="pain-form" class="form-container">
 
   <label for="stroke-type">Stroke Type:</label>
   <select id="stroke-type">
@@ -52,7 +53,7 @@
   <div class="button-row">
     <button type="button" onclick="undo()">Undo</button>
     <button type="button" onclick="redo()">Redo</button>
-    <button type="submit">Download</button>
+    <button type="submit">Download Drawing</button>
   </div>
 </form>
 <script src="script.js"></script>
