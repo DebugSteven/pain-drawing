@@ -107,14 +107,23 @@ function drawPath(ctx, path) {
 function getTodayInMountainTime() {
   const now = new Date();
 
-  const formatter = new Intl.DateTimeFormat('en-CA', {
+  const formatter = new Intl.DateTimeFormat('en-US', {
     timeZone: 'America/Denver',
     year: 'numeric',
     month: '2-digit',
-    day: '2-digit'
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: true
   });
 
-  return formatter.format(now);
+  const parts = formatter.formatToParts(now);
+
+  const lookup = (type) => parts.find(p => p.type === type)?.value || '';
+  const date = `${lookup('year')}-${lookup('month')}-${lookup('day')}`;
+  const time = `${lookup('hour')}:${lookup('minute')} ${lookup('dayPeriod')}`;
+
+  return `${date}_${time}`;
 }
 
 function undo() {
