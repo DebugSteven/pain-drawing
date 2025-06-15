@@ -10,16 +10,17 @@ let currentStrokeType = 'free';
 //let accumlatedDistance = 0;
 
 function getPos(e) {
+  const rect = canvas.getBoundingClientRect();
+
   if (e.touches && e.touches.length > 0) {
-    const rect = canvas.getBoundingClientRect();
     return {
-      x: e.touches[0].clientX - rect.left,
-      y: e.touches[0].clientY - rect.top,
+      x: (e.touches[0].clientX - rect.left) * (canvas.width / rect.width),
+      y: (e.touches[0].clientY - rect.top) * (canvas.height / rect.height),
     };
   } else {
     return {
-      x: e.offsetX,
-      y: e.offsetY,
+      x: (e.clientX - rect.left) * (canvas.width / rect.width),
+      y: (e.clientY - rect.top) * (canvas.height / rect.height)
     };
   }
 }
