@@ -1,11 +1,17 @@
+<head>
+    <link rel="stylesheet" href="style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+</head>
+
 <canvas id="merged" width="500" height="700" style="display: none;"></canvas>
 
 <h2>Pain Drawing Instructions</h2>
 <div style="max-width: 700px; margin-bottom: 20px;">
   <p><strong>Please read carefully:</strong></p>
   <p>
-    This form does not save your progress. Please download to save.
-    Your drawing will be erased if the page is refreshed or closed.
+    This form does not save your progress. Your drawing and entries will
+    be erased if the page is refreshed or closed. The form will download
+    when you hit submit.
   <p>
     Mark the areas on your body where you feel your pain is. Include all affected areas.
     Mark areas of radiation. If your pain radiates, draw an arrow from where it starts to
@@ -26,14 +32,11 @@
   </ul>
 </div>
 
-<form id="pain-form" autocomplete="off">
+<form id="pain-form" class="form-container" autocomplete="off">
   <label>Name: <input type="text" name="name" /></label><br />
   <label>Date: <input type="date" name="date" id="date" /></label><br />
   <label>Date of Birth: <input type="date" name="dob" /></label><br />
   <label>Examiner: <input type="text" name="examiner" /></label><br />
-
-  <button type="button" onclick="undo()">Undo</button>
-  <button type="button" onclick="redo()">Redo</button>
 
   <label for="stroke-type">Stroke Type:</label>
   <select id="stroke-type">
@@ -46,11 +49,15 @@
     <option value="~">Throbbing (~~~~~)</option>
   </select>
 
-  <div style="position: relative; width: 500px; height: 700px;">
-    <img src="body-diagram.png" style="position: absolute; top: 0; left: 0; z-index: 0;" width="500" height="700" />
-    <canvas id="draw" width="500" height="700" style="position: absolute; top: 0; left: 0; z-index: 1;"></canvas>
+  <div class="canvas-container">
+    <img src="body-diagram.png" />
+    <canvas id="draw" width="500" height="700"></canvas>
   </div>
 
-  <button type="submit">Submit</button>
+  <div class="button-row">
+    <button type="button" onclick="undo()">Undo</button>
+    <button type="button" onclick="redo()">Redo</button>
+    <button type="submit">Submit</button>
+  </div>
 </form>
 <script src="script.js"></script>
