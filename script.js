@@ -104,7 +104,7 @@ function drawPath(ctx, path) {
   }
 }
 
-function getTodayInMountainTime() {
+function getMountainTimestamp() {
   const now = new Date();
 
   const formatter = new Intl.DateTimeFormat('en-US', {
@@ -114,6 +114,7 @@ function getTodayInMountainTime() {
     day: '2-digit',
     hour: '2-digit',
     minute: '2-digit',
+    second: '2-digit',
     hour12: true
   });
 
@@ -121,7 +122,7 @@ function getTodayInMountainTime() {
 
   const lookup = (type) => parts.find(p => p.type === type)?.value || '';
   const date = `${lookup('year')}-${lookup('month')}-${lookup('day')}`;
-  const time = `${lookup('hour')}:${lookup('minute')} ${lookup('dayPeriod')}`;
+  const time = `${lookup('hour')}:${lookup('minute')}:${lookup('second')} ${lookup('dayPeriod')}`;
 
   return `${date}_${time}`;
 }
