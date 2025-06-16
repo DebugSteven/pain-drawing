@@ -53,15 +53,15 @@
                 <option value="~">Throbbing (~~~~~)</option>
             </select>
 
-            <div class="canvas-container">
-                <img src="body-diagram.png" id="body-diagram" alt="Body Diagram" />
-                <canvas id="draw" width="403" height="463"></canvas>
-            </div>
-
             <div class="button-row">
                 <button type="button" onclick="undo()">Undo</button>
                 <button type="button" onclick="redo()">Redo</button>
                 <button type="submit">Download Drawing</button>
+            </div>
+
+            <div class="canvas-container">
+                <img src="body-diagram.png" id="body-diagram" alt="Body Diagram" />
+                <canvas id="draw" width="403" height="463"></canvas>
             </div>
         </form>
         <script src="script.js"></script>
