@@ -127,6 +127,34 @@ function getMountainTimestamp() {
   return `${date}_${time}`;
 }
 
+function dataURLtoBlob(dataURL) {
+  const parts = dataURL.split(',');
+  const mime = parts[0].match(/:(.*?);/)[1];
+  const binary = atob(parts[1]);
+  const array = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) {
+    array[i] = binary.charCodeAt(i);
+  }
+  return new Blob([array], { type: mime });
+}
+
+function downloadImage(dataURL) {
+  const blob = dataURLtoBlob(dataURL);
+  const blobUrl = URL.createObjectURL(blob);
+  const timestamp = getMountainTimestamp();
+  const filename = `PainDrawing-${timestamp}.png`;
+
+  const a = document.createElement("a");
+  a.href = blobUrl;
+  a.download = filename;
+
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+
+  URL.revokeObjectURL(blobUrl);
+}
+
 function undo() {
   if (paths.length === 0) return;
   redoStack.push(paths.pop());
@@ -165,23 +193,14 @@ document.getElementById('pain-form').addEventListener('submit', async (e) => {
   e.preventDefault();
 
   try {
-  const mergedImage = await mergeCanvases(); // waits until image is ready
-  const timestamp = getMountainTimestamp();
-  const filename = `PainDrawing-${timestamp}.png`;
-
-  const a = document.createElement('a');
-  a.href = mergedImage;
-  a.download = filename;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-
-  // clear canvas and drawing state
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  paths = [];
-  redoStack = [];
-  document.getElementById('stroke-type').value = 'free';
-  currentStrokeType = 'free';
+    const mergedImage = await mergeCanvases(); // waits until image is ready
+    downloadImage(mergedImage);
+    // clear canvas and drawing state
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    paths = [];
+    redoStack = [];
+    document.getElementById('stroke-type').value = 'free';
+    currentStrokeType = 'free';
   } catch(err) {
     console.error('Image download failed:', err);
     alert('Something went wrong while creating the image.');
