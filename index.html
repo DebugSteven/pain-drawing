@@ -1,68 +1,69 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8" />
-    <title>Pain Drawing</title>
-    <link rel="stylesheet" href="style.css">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-</head>
+    <head>
+        <meta charset="UTF-8" />
+        <title>Pain Drawing</title>
+        <link rel="stylesheet" href="style.css">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    </head>
 
-<body>
+    <body>
+        <h2>Pain Drawing Instructions</h2>
+        <div style="max-width: 700px; margin-bottom: 20px;">
+            <p><strong>Please read carefully:</strong></p>
+            <p>
+            This drawing will download as an image. You can attach it to your
+            patient intake paperwork. Your drawing will be erased when the page
+            is refreshed or closed and after you click the <i>Download
+            Drawing</i> button.
+            <p>
+            Mark the areas on your body where you feel your pain is. Include
+            all affected areas. Mark areas of radiation. If your pain
+            radiates, draw an arrow from where it starts to where it stops.
+            Please extend the arrow as far as the pain travels.
+            </p>
+            <p>
+            If you're filling this out on a computer or tablet, use your
+            mouse, trackpad, or finger/stylus to draw directly over the body
+            diagram.
+            </p>
+            <p>Use the appropriate symbol(s) listed below:</p>
+            <ul>
+                <li><strong>Ache</strong>: &gt;&gt;&gt;&gt;&gt;</li>
+                <li><strong>Numbness</strong>: =====</li>
+                <li><strong>Pins & Needles</strong>: 0000</li>
+                <li><strong>Burning</strong>: XXXX</li>
+                <li><strong>Stabbing</strong>: /////</li>
+                <li><strong>Throbbing</strong>: ~~~~~</li>
+            </ul>
+        </div>
 
-<h2>Pain Drawing Instructions</h2>
-<div style="max-width: 700px; margin-bottom: 20px;">
-  <p><strong>Please read carefully:</strong></p>
-  <p>
-    This drawing will download as an image. You can attach it to your
-    patient intake paperwork. Your drawing will be erased when the page
-    is refreshed or closed.
-  <p>
-    Mark the areas on your body where you feel your pain is. Include all affected areas.
-    Mark areas of radiation. If your pain radiates, draw an arrow from where it starts to
-    where it stops. Please extend the arrow as far as the pain travels.
-  </p>
-  <p>
-    If you're filling this out on a computer or tablet, use your mouse, trackpad, or finger/stylus
-    to draw directly over the body diagram.
-  </p>
-  <p>Use the appropriate symbol(s) listed below:</p>
-  <ul>
-    <li><strong>Ache</strong>: &gt;&gt;&gt;&gt;&gt;</li>
-    <li><strong>Numbness</strong>: =====</li>
-    <li><strong>Pins & Needles</strong>: 0000</li>
-    <li><strong>Burning</strong>: XXXX</li>
-    <li><strong>Stabbing</strong>: /////</li>
-    <li><strong>Throbbing</strong>: ~~~~~</li>
-  </ul>
-</div>
+        <form id="pain-form" class="form-container">
 
-<form id="pain-form" class="form-container">
+            <canvas id="merged" width="403" height="463" style="display: none;"></canvas>
 
-  <canvas id="merged" width="403" height="463" style="display: none;"></canvas>
+            <label for="stroke-type">Stroke Type:</label>
+            <select id="stroke-type">
+                <option value="free">Free Draw</option>
+                <option value=">">Ache (>>>>>)</option>
+                <option value="=">Numbness (=====)</option>
+                <option value="0">Pins & Needles (0000)</option>
+                <option value="X">Burning (XXXX)</option>
+                <option value="/">Stabbing (/////)</option>
+                <option value="~">Throbbing (~~~~~)</option>
+            </select>
 
-  <label for="stroke-type">Stroke Type:</label>
-  <select id="stroke-type">
-    <option value="free">Free Draw</option>
-    <option value=">">Ache (>>>>>)</option>
-    <option value="=">Numbness (=====)</option>
-    <option value="0">Pins & Needles (0000)</option>
-    <option value="X">Burning (XXXX)</option>
-    <option value="/">Stabbing (/////)</option>
-    <option value="~">Throbbing (~~~~~)</option>
-  </select>
+            <div class="canvas-container">
+                <img src="body-diagram.png" id="body-diagram" alt="Body Diagram" />
+                <canvas id="draw" width="403" height="463"></canvas>
+            </div>
 
-  <div class="canvas-container">
-    <img src="body-diagram.png" id="body-diagram" alt="Body Diagram" />
-    <canvas id="draw" width="403" height="463"></canvas>
-  </div>
-
-  <div class="button-row">
-    <button type="button" onclick="undo()">Undo</button>
-    <button type="button" onclick="redo()">Redo</button>
-    <button type="submit">Download Drawing</button>
-  </div>
-</form>
-<script src="script.js"></script>
-
-</body>
+            <div class="button-row">
+                <button type="button" onclick="undo()">Undo</button>
+                <button type="button" onclick="redo()">Redo</button>
+                <button type="submit">Download Drawing</button>
+            </div>
+        </form>
+        <script src="script.js"></script>
+    </body>
 </html>
