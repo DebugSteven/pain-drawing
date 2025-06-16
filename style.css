@@ -14,9 +14,11 @@ body {
 .canvas-container {
   position: relative;
   width: 100%;
-  max-width: 500px;
-  aspect-ratio: 5 / 7;
+  max-width: 403px;
+  aspect-ration: 403 / 463;
   margin: auto;
+  height: auto;
+  padding-top: calc((463 / 403) * 100%);
 }
 
 .canvas-container img,
@@ -27,6 +29,12 @@ body {
   width: 100%;
   height: 100%;
   display: block;
+}
+
+canvas {
+  z-index: 1;
+  touch-action: none;
+  background-color: transparent;
 }
 
 input,
@@ -41,12 +49,6 @@ button {
 button {
   cursor: pointer;
   min-height: 44px;
-}
-
-canvas {
-  z-index: 1;
-  touch-action: none;
-  background-color: transparent;
 }
 
 .button-row {

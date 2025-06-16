@@ -1,9 +1,13 @@
+<!DOCTYPE html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8" />
+    <title>Pain Drawing</title>
     <link rel="stylesheet" href="style.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 </head>
 
-<canvas id="merged" width="500" height="700" style="display: none;"></canvas>
+<body>
 
 <h2>Pain Drawing Instructions</h2>
 <div style="max-width: 700px; margin-bottom: 20px;">
@@ -34,6 +38,8 @@
 
 <form id="pain-form" class="form-container">
 
+  <canvas id="merged" width="403" height="463" style="display: none;"></canvas>
+
   <label for="stroke-type">Stroke Type:</label>
   <select id="stroke-type">
     <option value="free">Free Draw</option>
@@ -46,8 +52,8 @@
   </select>
 
   <div class="canvas-container">
-    <img src="body-diagram.png" />
-    <canvas id="draw" width="500" height="700"></canvas>
+    <img src="body-diagram.png" id="body-diagram" alt="Body Diagram" />
+    <canvas id="draw" width="403" height="463"></canvas>
   </div>
 
   <div class="button-row">
@@ -57,3 +63,6 @@
   </div>
 </form>
 <script src="script.js"></script>
+
+</body>
+</html>
