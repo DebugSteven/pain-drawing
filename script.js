@@ -127,19 +127,7 @@ function getMountainTimestamp() {
   return `${date}_${time}`;
 }
 
-function dataURLtoBlob(dataURL) {
-  const parts = dataURL.split(',');
-  const mime = parts[0].match(/:(.*?);/)[1];
-  const binary = atob(parts[1]);
-  const array = new Uint8Array(binary.length);
-  for (let i = 0; i < binary.length; i++) {
-    array[i] = binary.charCodeAt(i);
-  }
-  return new Blob([array], { type: mime });
-}
-
-function downloadImage(dataURL) {
-  const blob = dataURLtoBlob(dataURL);
+function downloadImageFirefox(blob) {
   const blobUrl = URL.createObjectURL(blob);
   const timestamp = getMountainTimestamp();
   const filename = `PainDrawing-${timestamp}.png`;
@@ -153,6 +141,23 @@ function downloadImage(dataURL) {
   document.body.removeChild(a);
 
   URL.revokeObjectURL(blobUrl);
+}
+
+function downloadImage(blob) {
+  const blobUrl = URL.createObjectURL(blob);
+  const timestamp = getMountainTimestamp();
+  const filename = `PainDrawing-${timestamp}.png`;
+  const a = document.createElement("a");
+  a.href = blobUrl;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(blobUrl);
+}
+
+function isFirefox() {
+  return navigator.userAgent.toLowerCase().includes('firefox');
 }
 
 function undo() {
@@ -194,7 +199,11 @@ document.getElementById('pain-form').addEventListener('submit', async (e) => {
 
   try {
     const mergedImage = await mergeCanvases(); // waits until image is ready
-    downloadImage(mergedImage);
+    if (isFirefox()) {
+      downloadImageFirefox(mergedImage);
+    } else {
+      downloadImage(mergedImage);
+    }
     // clear canvas and drawing state
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     paths = [];
@@ -221,6 +230,7 @@ async function mergeCanvases() {
   bgImage.src = 'body-diagram.png'; // image path for body-diagram.png
 
   return new Promise((resolve, reject) => {
+    bgImage.crossOrigin = "anonymous"; // prevent CORS-tainting
     bgImage.onload = () => {
       mergedCtx.drawImage(bgImage, 0, 0, mergedCanvas.width, mergedCanvas.height);
 
@@ -233,7 +243,13 @@ async function mergeCanvases() {
           drawPath(mergedCtx, path);
       }
 
-      resolve(mergedCanvas.toDataURL('image/png')); // export the merged image
+      mergedCanvas.toBlob((blob) => {
+        if (blob) {
+          resolve(blob);
+        } else {
+          reject('Failed to create image blob');
+        }
+      }, 'image/png');
     };
 
     bgImage.onerror = () => reject('Failed to load background image');
