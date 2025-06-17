@@ -1,0 +1,22 @@
+/*
+
+  # Prevent Referer header leakage
+  Referrer-Policy: no-referrer
+
+  # Opt out of Google's FLoC/tracking cohorts
+  Permissions-Policy: interest-cohort=()
+
+  # Prevent search engines from indexing
+  X-Robots-Tag: noindex, nofollow
+
+  # Enable cross-browser strict HTTPS
+  Strict-Transport-Security: max-age=63072000; includeSubDomains; preload
+
+  # Minimal CORS needed for canvas and image use
+  Access-Control-Allow-Origin: *
+
+  # Disallow MIME sniffing
+  X-Content-Type-Options: nosniff
+
+  # Prevent clickjacking
+  X-Frame-Options: DENY
