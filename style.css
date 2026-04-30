@@ -15,10 +15,8 @@ body {
   position: relative;
   width: 100%;
   max-width: 403px;
-  aspect-ration: 403 / 463;
+  aspect-ratio: 403 / 463;
   margin: auto;
-  height: auto;
-  padding-top: calc((463 / 403) * 100%);
 }
 
 .canvas-container img,
