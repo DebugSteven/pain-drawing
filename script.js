@@ -127,26 +127,10 @@ function getMountainTimestamp() {
   return `${date}_${time}`;
 }
 
-function downloadImageFirefox(blob) {
+function downloadBlob(blob, extension) {
   const blobUrl = URL.createObjectURL(blob);
   const timestamp = getMountainTimestamp();
-  const filename = `PainDrawing-${timestamp}.png`;
-
-  const a = document.createElement("a");
-  a.href = blobUrl;
-  a.download = filename;
-
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-
-  URL.revokeObjectURL(blobUrl);
-}
-
-function downloadImage(blob) {
-  const blobUrl = URL.createObjectURL(blob);
-  const timestamp = getMountainTimestamp();
-  const filename = `PainDrawing-${timestamp}.png`;
+  const filename = `PainDrawing-${timestamp}.${extension}`;
   const a = document.createElement("a");
   a.href = blobUrl;
   a.download = filename;
@@ -154,10 +138,6 @@ function downloadImage(blob) {
   a.click();
   document.body.removeChild(a);
   URL.revokeObjectURL(blobUrl);
-}
-
-function isFirefox() {
-  return navigator.userAgent.toLowerCase().includes('firefox');
 }
 
 function undo() {
@@ -197,62 +177,98 @@ document.getElementById('stroke-type').addEventListener('change', (e) => {
 document.getElementById('pain-form').addEventListener('submit', async (e) => {
   e.preventDefault();
 
+  const submitButton = e.target.querySelector('button[type="submit"]');
+  const originalLabel = submitButton ? submitButton.textContent : null;
+  if (submitButton) {
+    submitButton.disabled = true;
+    submitButton.textContent = 'Preparing PDF...';
+  }
+
   try {
-    const mergedImage = await mergeCanvases(); // waits until image is ready
-    if (isFirefox()) {
-      downloadImageFirefox(mergedImage);
-    } else {
-      downloadImage(mergedImage);
-    }
-    // clear canvas and drawing state
+    const pdfBlob = await buildFilledPdf();
+    downloadBlob(pdfBlob, 'pdf');
+
+    // Clear canvas and drawing state after a successful download.
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     paths = [];
     redoStack = [];
     document.getElementById('stroke-type').value = 'free';
     currentStrokeType = 'free';
-  } catch(err) {
-    console.error('Image download failed:', err);
-    alert('Something went wrong while creating the image.');
+  } catch (err) {
+    console.error('PDF download failed:', err);
+    alert('Something went wrong while creating the PDF. Please try again.');
+  } finally {
+    if (submitButton) {
+      submitButton.disabled = false;
+      submitButton.textContent = originalLabel;
+    }
   }
 });
 
-// This function will take the user's drawing and save it over
-// body-diagram.png
-async function mergeCanvases() {
-  const mergedCanvas = document.getElementById('merged');
-  const mergedCtx = mergedCanvas.getContext('2d');
-
-  // Clear canvas
-  mergedCtx.clearRect(0, 0, mergedCanvas.width, mergedCanvas.height);
-
-  // Draw the background image
-  const bgImage = new Image();
-  bgImage.src = 'body-diagram.png'; // image path for body-diagram.png
-
+// Returns a PNG blob containing only the user's drawing on a transparent
+// background, sized to match the original body-diagram.png (403 x 463 px).
+function getDrawingPngBlob() {
   return new Promise((resolve, reject) => {
-    bgImage.crossOrigin = "anonymous"; // prevent CORS-tainting
-    bgImage.onload = () => {
-      mergedCtx.drawImage(bgImage, 0, 0, mergedCanvas.width, mergedCanvas.height);
-
-      mergedCtx.font = '16px sans-serif';
-      mergedCtx.fillStyle = 'red';
-      mergedCtx.strokeStyle = 'red';
-
-      // Redraw all saved paths
-      for (const path of paths) {
-          drawPath(mergedCtx, path);
+    canvas.toBlob((blob) => {
+      if (blob) {
+        resolve(blob);
+      } else {
+        reject(new Error('Failed to create drawing PNG blob'));
       }
-
-      mergedCanvas.toBlob((blob) => {
-        if (blob) {
-          resolve(blob);
-        } else {
-          reject('Failed to create image blob');
-        }
-      }, 'image/png');
-    };
-
-    bgImage.onerror = () => reject('Failed to load background image');
+    }, 'image/png');
   });
+}
+
+async function blobToArrayBuffer(blob) {
+  if (blob.arrayBuffer) {
+    return blob.arrayBuffer();
+  }
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = () => reject(reader.error);
+    reader.readAsArrayBuffer(blob);
+  });
+}
+
+// Loads the blank pain-drawing form PDF, overlays the user's drawing on top
+// of the body diagram, and returns the result as a PDF Blob.
+async function buildFilledPdf() {
+  if (typeof PDFLib === 'undefined') {
+    throw new Error('pdf-lib failed to load.');
+  }
+
+  const [pdfResponse, drawingBlob] = await Promise.all([
+    fetch('blank-pain-drawing-form.pdf'),
+    getDrawingPngBlob(),
+  ]);
+
+  if (!pdfResponse.ok) {
+    throw new Error(`Failed to load form PDF (HTTP ${pdfResponse.status})`);
+  }
+
+  const [pdfBytes, drawingBytes] = await Promise.all([
+    pdfResponse.arrayBuffer(),
+    blobToArrayBuffer(drawingBlob),
+  ]);
+
+  const pdfDoc = await PDFLib.PDFDocument.load(pdfBytes);
+  const drawingImage = await pdfDoc.embedPng(drawingBytes);
+
+  // Coordinates of the embedded body-diagram image inside the source PDF.
+  // The cm matrix in the PDF content stream is `354 0 0 406.5 128.95 27.7`,
+  // which means the image's bottom-left corner sits at (128.95, 27.7) and it
+  // occupies 354 x 406.5 PDF points. Drawing the user's transparent drawing
+  // PNG with the same placement aligns it perfectly over the body diagram.
+  const page = pdfDoc.getPages()[0];
+  page.drawImage(drawingImage, {
+    x: 128.95,
+    y: 27.7,
+    width: 354,
+    height: 406.5,
+  });
+
+  const filledPdfBytes = await pdfDoc.save();
+  return new Blob([filledPdfBytes], { type: 'application/pdf' });
 }
 

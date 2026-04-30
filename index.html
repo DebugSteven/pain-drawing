@@ -12,17 +12,16 @@
         <div style="max-width: 700px; margin-bottom: 20px;">
             <p><strong>Please read carefully:</strong></p>
             <p>
-            This tool is for <strong>personal use only</strong>. Data entered
-            here is stored only on your device and never transmitted or
-            stored by a server. If you choose to share your pain drawing with a
-            medical provider, do so at your own discretion. This app is not
-            intended to replace medical advice or act as a medical record
-            system.
+            This tool is provided by <strong>Physical Therapy Doctors</strong>
+            in Berthoud, CO. When you click <i>Download Drawing</i>, a
+            completed pain drawing form will be saved to your device as a PDF
+            so you can send it back to the front desk. Data entered here is
+            stored only on your device and never transmitted or stored by a
+            server.
             </p>
             <p>
-            This drawing will download as an image. Your drawing will be erased
-            when the page is refreshed or closed and after you click the
-            <i>Download Drawing</i> button.
+            Your drawing will be erased when the page is refreshed or closed
+            and after you click the <i>Download Drawing</i> button.
             <p>
             Mark the areas on your body where you feel your pain is. Include
             all affected areas. Mark areas of radiation. If your pain
@@ -47,8 +46,6 @@
 
         <form id="pain-form" class="form-container">
 
-            <canvas id="merged" width="403" height="463" style="display: none;"></canvas>
-
             <label for="stroke-type">Stroke Type:</label>
             <select id="stroke-type">
                 <option value="free">Free Draw</option>
@@ -71,6 +68,7 @@
                 <canvas id="draw" width="403" height="463"></canvas>
             </div>
         </form>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
         <script src="script.js"></script>
     </body>
 </html>
