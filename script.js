@@ -256,16 +256,22 @@ async function buildFilledPdf() {
   const drawingImage = await pdfDoc.embedPng(drawingBytes);
 
   // Coordinates of the embedded body-diagram image inside the source PDF.
-  // The cm matrix in the PDF content stream is `354 0 0 406.5 128.95 27.7`,
-  // which means the image's bottom-left corner sits at (128.95, 27.7) and it
-  // occupies 354 x 406.5 PDF points. Drawing the user's transparent drawing
-  // PNG with the same placement aligns it perfectly over the body diagram.
+  // The cm matrix in the PDF content stream is
+  // `285 0 0 327.43176 163.5 112.496704`, which means the image's bottom-left
+  // corner sits at (163.5, 112.4967) and it occupies 285 x 327.43 PDF points.
+  // Drawing the user's transparent drawing PNG with the same placement aligns
+  // it perfectly over the body diagram.
+  //
+  // These come from the Typst build of the pain drawing (pages/pain-drawing.typ,
+  // `image("../assets/body-diagram.png", width: 285pt)`, centred on the page).
+  // If that page's layout changes, read the new matrix out of the PDF and
+  // update these four numbers.
   const page = pdfDoc.getPages()[0];
   page.drawImage(drawingImage, {
-    x: 128.95,
-    y: 27.7,
-    width: 354,
-    height: 406.5,
+    x: 163.5,
+    y: 112.4967,
+    width: 285,
+    height: 327.4318,
   });
 
   const filledPdfBytes = await pdfDoc.save();
